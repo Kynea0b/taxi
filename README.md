@@ -96,5 +96,5 @@ ver2.0では「総低速走行時間」を取得するルールをうまく表�
 <img width="659" alt="スクリーンショット 2024-03-31 23 42 44" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/6f65bedd-fa55-4647-8200-ec99a6ee5627">
 
 ↓概念モデルを元にコーディングして整理したver3.0のクラス図(厳密なクラス図とはいえないと思うが、、、)
-<img width="1146" alt="スクリーンショット 2024-04-01 0 22 12" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/fca1e602-5197-4427-85cb-478e906a1d9e">
+<img width="1134" alt="スクリーンショット 2024-04-01 0 44 15" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/5bc1872a-c5f5-4e5a-85b3-e422ee4190dd">
 
