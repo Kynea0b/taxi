@@ -1,6 +1,6 @@
 package sample;
-public class RecordList {
 
+public class RecordList {
 	private Record head;
 	private Record tail;
 
@@ -11,38 +11,19 @@ public class RecordList {
 
 	public void add(Record record) {
 		if(this.tail == null) {
+			this.head.add(record);
 			this.tail = record;
-			this.head.setNext(record);
-			this.tail.setPrev(this.head);
 		} else {
-			this.tail.setNext(record);
-			record.setPrev(this.tail);
+			this.tail.add(record);
 			this.tail = record;
 		}
 	}
 
-	public int length() {
-		int length = 0;
-		Record current = this.head;
-		while(current != null) {
-			length++;
-			current = current.next();
-		}
-		return length;
+	public double getTraveledDistanceM() {
+		return this.tail.getDistanceM();
 	}
 
-	public Record get(int index) {
-		int currentIndex = 0;
-		Record current = this.head;
-		while(current != null) {
-			if(index == currentIndex) return current;
-			currentIndex++;
-			current = current.next();
-		}
-		return null;
-	}
-
-	public double getTotalDistance() {
+	public double getTotalTraveledDistanceM() {
 		double total = 0;
 		Record current = this.head;
 		while(current != null) {
@@ -52,67 +33,34 @@ public class RecordList {
 		return total;
 	}
 
-	public double getLatestDistance() {
-		double distance = 0;
+	public Record getCurrent() {
 		if(this.tail == null) {
-			distance = this.head.getDistanceM();
-		} else {
-			distance = this.tail.getDistanceM();
+			return this.head;
 		}
-		return distance;
+		return this.tail;
 	}
 
-	public Record getLatestRecord() {
-		Record record = null;
+	public double getCurrentSpeed() {
 		if(this.tail == null) {
-			record = this.head;
-		} else {
-			record = this.tail;
+			throw new RuntimeException();
 		}
-		return record;
+		return this.tail.getSpeedKmH();
 	}
 
-	public long getTotalLowSpeedDrivingSeconds() {
-		if(this.head.hasNext() == false) return 0;
-		Record current = this.head.next();
-		long seconds = 0;
-		while(current != null) {
-			double currentTotalDistance = 0;
-			Record index = current;
-			while(index != null) {
-				currentTotalDistance += index.getDistanceM();
-				index = index.getPrev();
-			}
-			if(current.getSpeedKmH() <= 10 && currentTotalDistance > 1000) {
-				seconds += current.getDurationMs()/1000;
-			}
-			current = current.next();
-		}
-		return seconds;
-	}
-
-	public long getLatestLowSpeedDrivingSeconds() {
-		if(this.tail == null) return 0;
-		return this.tail.getDurationMs() / 1000;
-	}
-
-	public void getTest() {
-		Record current = this.head.next();
-		while(current != null) {
-			current = current.next();
-		}
-	}
-
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
+	public Record getRecordAtSection(Section initial) {
 		Record current = this.head;
+		double totalDistanceM = 0;
 		while(current != null) {
-			sb.append(current.toString() + System.getProperty("line.separator"));
+			totalDistanceM += current.getDistanceM();
+			if(totalDistanceM >= initial.getDistanceM()) {
+				return current;
+			}
 			current = current.next();
 		}
-		return sb.toString();
+		return null;
 	}
 
+	public TimeZoneType getCurrentTimeZoneType() {
+		return this.tail.getTimeZoneType();
+	}
 }

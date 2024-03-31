@@ -1,55 +1,30 @@
 package sample;
+
 import java.time.Duration;
 import java.time.LocalTime;
 
-public class Record{
-	private final LocalTime timestamp;
-	private final double distanceM;
+public class Record {
+	private LocalTime timestamp;
+	private double distanceM;
 	private Record prev;
 	private Record next;
 
-	public Record(LocalTime timestamp, double distanceM) {
+	public Record(LocalTime timestamp,double distanceM) {
 		this.timestamp = timestamp;
 		this.distanceM = distanceM;
-		this.prev = null;
-		this.next = null;
 	}
 
-	public void setNext(Record record) {
-		this.next = record;
-	}
-
-	public void setPrev(Record record) {
-		this.prev = record;
-	}
-
-	public Record getPrev() {
-		return this.prev;
-	}
-
-	public double getSpeedKmH() {
-		if(this.prev == null) {
-			return 0;
+	public void add(Record record) {
+		if(this.next != null) {
+			throw new RuntimeException();
+		} else {
+			this.next = record;
+			record.prev = this;
 		}
-		long duration = Duration.between(this.prev.timestamp, this.timestamp).toMillis();
-		double speed = (distanceM / duration) * 3600;
-		return speed;
-	}
-
-	public long getDurationMs() {
-		return Duration.between(this.prev.timestamp, this.timestamp).toMillis();
-	}
-
-	public double getDistanceM() {
-		return this.distanceM;
-	}
-
-	public String getTimestamp() {
-		return this.timestamp.toString();
 	}
 
 	public boolean hasNext() {
-		return next != null;
+		return this.next != null;
 	}
 
 	public Record next() {
@@ -57,9 +32,9 @@ public class Record{
 	}
 
 	public TimeZoneType getTimeZoneType() {
+		// 通常
 		if (this.timestamp.isAfter(LocalTime.of(9, 59, 59, 999))
 				&& this.timestamp.isBefore(LocalTime.of(20, 0, 0, 0))) {
-			// 通常
 			return TimeZoneType.STANDARD;
 		} else if (this.timestamp.isAfter(LocalTime.of(5, 59, 59, 999))
 				&& this.timestamp.isBefore(LocalTime.of(10, 0, 0, 0))
@@ -73,8 +48,17 @@ public class Record{
 		}
 	}
 
-		@Override
-		public String toString() {
-			return "Record [timestamp=" + timestamp + ", distanceM=" + distanceM + "]";
-		}
+	public double getDistanceM() {
+		return this.distanceM;
+	}
+
+	public double getSpeedKmH() {
+		long durationMs = Duration.between(this.prev.timestamp, this.timestamp).toMillis();
+		double speed = (distanceM / durationMs) * 3600;
+		return speed;
+	}
+
+	public LocalTime getTimestamp() {
+		return this.timestamp;
+	}
 }

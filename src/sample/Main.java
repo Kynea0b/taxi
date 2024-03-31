@@ -22,10 +22,10 @@ public class Main {
 			LocalTime timestamp = LocalTime.parse(firstContent.split(" ")[0]);
 			double distanceM = Double.parseDouble(firstContent.split(" ")[1]);
 			Record firstRecord = new Record(timestamp, distanceM);
-			initialFare = InitialFareCalculateService.getInitialFare(firstRecord);
-			fare += initialFare;
-
 			list = new RecordList(firstRecord);
+
+			initialFare = InitialFareCalculateService.getFare(list);
+			fare += initialFare;
 
 
 			String content;
@@ -35,11 +35,11 @@ public class Main {
 				Record currentRecord = new Record(timestamp, distanceM);
 				list.add(currentRecord);
 				//距離運賃計算
-				distanceFare = DistanceFareCalculateService.getDistanceFare(list);
+				distanceFare = DistanceFareCalculateService.getFare(list);
 				fare += distanceFare;
 
 				//低速走行時間運賃計算
-				lowSpeedTravelTimeFare = SlowTravelFareCulculateService.getSlowTravelFare(list);
+				lowSpeedTravelTimeFare = SlowSpeedDrivingFareCalculationService.getFare(list);
 				fare += lowSpeedTravelTimeFare;
 			}
 		} catch (FileNotFoundException e) {

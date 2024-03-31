@@ -1,10 +1,23 @@
 package sample;
 
 public class DistanceFareCalculateService {
+	// 基本料金
 	private static final int BASE_FARE = 40;
+	// 割増率
+	//   通常時間帯
 	private static final double STANDARD_FARE_RATE = 1.0;
-	private static final double LATE_TIME_FARE_RATE = 1.5;
+	//   ピーク時間帯
 	private static final double PEEK_FARE_RATE = 1.3;
+	//   深夜時間帯
+	private static final double LATE_TIME_FARE_RATE = 1.5;
+	// TODO ここに初乗区間の値を定義すると初乗区間影響範囲がわからなくなる
+	// 初乗区間
+	private static final int INITIAL_SECTOIN = 1000;
+	// 課金区間単位
+	//   短距離区間単位
+	private static final int LONG_TRAVEL_SECTOIN_INTERVAL = 400;
+	//   長距離区間単位
+	private static final int SHORT_TRAVEL_SECTION_INTERVAL= 350;
 
 	/**
 	 * 距離運賃を取得する
@@ -13,43 +26,34 @@ public class DistanceFareCalculateService {
 	 * @param list
 	 * @return
 	 */
-	public static double getDistanceFare(RecordList list) {
-		double totalDistance = list.getTotalDistance();
-		if(totalDistance < 1000) return 0;
-		if(totalDistance <= 10200) {
-			if(isExceededOfShortDistanceSection(list)) {
-				return BASE_FARE * getWarimashiRate(list.getLatestRecord());
-			}
-		} else if (totalDistance > 10200) {
-			if(isExceededOfLongDistanceSection(list)) {
-				return BASE_FARE * getWarimashiRate(list.getLatestRecord());
-			}
+	public static double getFare(RecordList list) {
+		double totalDistanceM = list.getTotalTraveledDistanceM();
+		if(totalDistanceM <= INITIAL_SECTOIN) {
+			return 0;
+		}
+
+		double traveledDistanceM = list.getTraveledDistanceM();
+		if(isCrossingInterval(totalDistanceM, traveledDistanceM)) {
+			TimeZoneType type = list.getCurrentTimeZoneType();
+			return BASE_FARE * getFareRate(type);
 		}
 		return 0;
 	}
 
 	/**
-	 * 短距離区間をまたいだかを判断する
+	 * 各距離区間をまたいだかを判断する
 	 * 短距離区間：距離メーターが1000+400i mを超え、1000+400(i+1) m以下の距離区間(ただし、iは0以上22以下の整数)
-	 * @param list
-	 * @return
-	 */
-	private static boolean isExceededOfShortDistanceSection(RecordList list) {
-		double totalDistance = list.getTotalDistance();
-		// 最新の走行距離によって400mの区切りを超えていたらtrue
-		// (1000 + 400i)mの区切りを超えると距離運賃が発生する
-		return (totalDistance - 1000) > 400 && (totalDistance - 1000) % 400 <= list.getLatestDistance();
-	}
-
-	/**
-	 * 長距離区間をまたいだかを判断する
 	 * 長距離区間：距離メーターが10200+350i mを超え、10200+350(i+1) m以下の距離区間(ただし、iは0以上の整数)
 	 * @param list
 	 * @return
 	 */
-	private static boolean isExceededOfLongDistanceSection(RecordList list) {
-		double totalDistance = list.getTotalDistance();
-		return (totalDistance - 1000) > 350 && (totalDistance - 1000) % 350 <= list.getLatestDistance();
+	private static boolean isCrossingInterval(double totalDistanceM, double traveledDistanceM) {
+		if((1000 + SHORT_TRAVEL_SECTION_INTERVAL) < totalDistanceM && totalDistanceM <= 10200) {
+			return totalDistanceM % SHORT_TRAVEL_SECTION_INTERVAL <= traveledDistanceM;
+		} else if(10200 + LONG_TRAVEL_SECTOIN_INTERVAL < totalDistanceM) {
+			return totalDistanceM % LONG_TRAVEL_SECTOIN_INTERVAL <= traveledDistanceM;
+		}
+		return false;
 	}
 
 	/**
@@ -57,8 +61,7 @@ public class DistanceFareCalculateService {
 	 * @param record
 	 * @return
 	 */
-	private static double getWarimashiRate(Record record) {
-		TimeZoneType type = record.getTimeZoneType();
+	private static double getFareRate(TimeZoneType type) {
 		switch (type) {
 		case STANDARD:
 			return STANDARD_FARE_RATE;
@@ -70,4 +73,5 @@ public class DistanceFareCalculateService {
 			throw new RuntimeException();
 		}
 	}
+
 }

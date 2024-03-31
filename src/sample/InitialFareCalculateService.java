@@ -1,4 +1,5 @@
 package sample;
+
 public class InitialFareCalculateService {
 	private static final int STANDARD_FARE = 400;
 	private static final int LATE_TIME_FARE = 600;
@@ -6,13 +7,10 @@ public class InitialFareCalculateService {
 
 	private InitialFareCalculateService() {}
 
+	public static int getFare(RecordList list) {
+		// TODO 例外処理：レコードが複数あればそれは初乗り運賃計算すべきではないもの
 
-	/**
-	 * 時間帯に応じて初乗料金を取得する
-	 * @param record
-	 * @return
-	 */
-	public static int getInitialFare(Record record) {
+		Record record = list.getCurrent();
 		TimeZoneType type = record.getTimeZoneType();
 		switch (type) {
 		case STANDARD:
