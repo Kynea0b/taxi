@@ -89,13 +89,14 @@ ver2.0では「総低速走行時間」を取得するルールをうまく表�
 これによって「低速走行時間メーター」は「距離メーター」を参照する形にしたのでレコードを持たない形になった  
 
 ↓こちらがその概念モデル（概念モデルとして正しい表現方法になっているかちょっと自信がないが、、、）
-<img width="1134" alt="スクリーンショット 2024-04-01 0 44 15" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/49c87132-b1da-4937-86ee-59cd023389a7">
+<img width="597" alt="スクリーンショット 2024-04-02 0 25 12" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/e0129a7d-998f-4bc1-888e-67e7a825ff42">
+
 
 
 ↓この概念モデルに各運賃計算の仕組みを加えて表現したのがこちら
 <img width="659" alt="スクリーンショット 2024-03-31 23 42 44" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/6f65bedd-fa55-4647-8200-ec99a6ee5627">
 
 ↓概念モデルを元にコーディングして整理したver3.0のクラス図(厳密なクラス図とはいえないと思うが、、、)
-<img width="1149" alt="スクリーンショット 2024-04-01 0 46 55" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/33f170ce-9fa9-40d6-9c82-d21257827153">
+<img width="1068" alt="スクリーンショット 2024-04-02 0 24 19" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/333cff68-a28d-4506-a74f-031d474afc7d">
 
 
