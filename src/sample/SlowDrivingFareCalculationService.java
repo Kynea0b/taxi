@@ -1,6 +1,6 @@
 package sample;
 
-public class DistanceFareCalculateService {
+public class SlowDrivingFareCalculationService {
 	// 基本料金
 	private static final int BASE_FARE = 40;
 	// 割増率
@@ -13,35 +13,27 @@ public class DistanceFareCalculateService {
 	// TODO ここに初乗区間の値を定義すると影響範囲がわからなくなる
 	// 初乗区間
 	private static final int INITIAL_SECTOIN = 1000;
-	// 課金区間単位
-	//   短距離区間単位
-	private static final int LONG_TRAVEL_SECTOIN_INTERVAL = 400;
-	//   長距離区間単位
-	private static final int SHORT_TRAVEL_SECTION_INTERVAL= 350;
 
-	private DistanceFareCalculateService() {}
+	private static final int TIME_INTERVAL = 45;
 
-	public static double calculateFare(double totalDistanceM,  Record record) {
+	private SlowDrivingFareCalculationService() {}
+
+	public static double calculateFare(long totalSeconds, double totalDistanceM, Record record) {
 		if(totalDistanceM <= INITIAL_SECTOIN) {
 			return 0;
 		}
 
-		double traveledDistanceM = record.getDistanceM();
-		if(isCrossingInterval(totalDistanceM, traveledDistanceM)) {
+		long totalSlowSpeedTravelSeconds = totalSeconds;
+		long passedTime = record.getDrivingSeconds();
+		if(isCrossingTimeInterval(totalSlowSpeedTravelSeconds, passedTime)) {
 			TimeZoneType type = record.getTimeZoneType();
 			return BASE_FARE * getFareRate(type);
 		}
-
 		return 0;
 	}
 
-	private static boolean isCrossingInterval(double totalDistanceM, double traveledDistanceM) {
-		if((1000 + SHORT_TRAVEL_SECTION_INTERVAL) < totalDistanceM && totalDistanceM <= 10200) {
-			return totalDistanceM % SHORT_TRAVEL_SECTION_INTERVAL <= traveledDistanceM;
-		} else if(10200 + LONG_TRAVEL_SECTOIN_INTERVAL < totalDistanceM) {
-			return totalDistanceM % LONG_TRAVEL_SECTOIN_INTERVAL <= traveledDistanceM;
-		}
-		return false;
+	private static boolean isCrossingTimeInterval(long totalSlowSpeedTravelSeconds, long passedTime) {
+		return totalSlowSpeedTravelSeconds > TIME_INTERVAL &&  totalSlowSpeedTravelSeconds % 45 <= passedTime;
 	}
 
 	private static double getFareRate(TimeZoneType type) {
@@ -56,5 +48,6 @@ public class DistanceFareCalculateService {
 			throw new RuntimeException();
 		}
 	}
+
 
 }

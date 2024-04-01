@@ -1,4 +1,5 @@
 package sample;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,39 +9,23 @@ import java.time.LocalTime;
 
 public class Main {
 	public static void main(String[] args) {
-		RecordList list = null;
+		DistanceMeter dMeter = new DistanceMeter();
+		SlowDrivingSecondsMeter sMeter = new SlowDrivingSecondsMeter(dMeter);
 		double fare = 0;
-		double initialFare = 0;
-		double distanceFare = 0;
-		double lowSpeedTravelTimeFare = 0;
-
 
 		File file = new File("testData/深夜帯.txt");
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			// 初乗料金計算
-			String firstContent = br.readLine();
-			LocalTime timestamp = LocalTime.parse(firstContent.split(" ")[0]);
-			double distanceM = Double.parseDouble(firstContent.split(" ")[1]);
-			Record firstRecord = new Record(timestamp, distanceM);
-			list = new RecordList(firstRecord);
-
-			initialFare = InitialFareCalculateService.getFare(list);
-			fare += initialFare;
-
-
 			String content;
-			while((content=br.readLine()) != null) {
-				timestamp = LocalTime.parse(content.split(" ")[0]);
-				distanceM = Double.parseDouble(content.split(" ")[1]);
-				Record currentRecord = new Record(timestamp, distanceM);
-				list.add(currentRecord);
-				//距離運賃計算
-				distanceFare = DistanceFareCalculateService.getFare(list);
-				fare += distanceFare;
+			while ((content = br.readLine()) != null) {
 
-				//低速走行時間運賃計算
-				lowSpeedTravelTimeFare = SlowSpeedDrivingFareCalculationService.getFare(list);
-				fare += lowSpeedTravelTimeFare;
+				LocalTime timestamp = LocalTime.parse(content.split(" ")[0]);
+				double distanceM = Double.parseDouble(content.split(" ")[1]);
+				Record currentRecord = new Record(timestamp, distanceM);
+
+				dMeter.records(currentRecord);
+				fare += dMeter.getFare();
+				sMeter.records();
+				fare += sMeter.getFare();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -48,6 +33,8 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		System.out.println("運賃：¥" + fare + "-");
+		System.out.println("総走行距離：" + dMeter.getTotalDistanceM() + " m");
+		System.out.println("総低速走行時間：" + sMeter.getTotalSeconds() + " 秒");
+		System.out.println("運賃:¥" + fare + "-");
 	}
 }

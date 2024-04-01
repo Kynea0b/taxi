@@ -7,10 +7,7 @@ public class InitialFareCalculateService {
 
 	private InitialFareCalculateService() {}
 
-	public static int getFare(RecordList list) {
-		// TODO 例外処理：レコードが複数あればそれは初乗り運賃計算すべきではないもの
-
-		Record record = list.getCurrent();
+	public static int calculateFare(Record record) {
 		TimeZoneType type = record.getTimeZoneType();
 		switch (type) {
 		case STANDARD:

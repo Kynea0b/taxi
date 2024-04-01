@@ -4,31 +4,38 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 public class Record {
-	private LocalTime timestamp;
 	private double distanceM;
+	private LocalTime timestamp;
 	private Record prev;
 	private Record next;
 
-	public Record(LocalTime timestamp,double distanceM) {
+	public Record(LocalTime timestamp, double distanceM) {
 		this.timestamp = timestamp;
 		this.distanceM = distanceM;
 	}
 
+	public double getDistanceM() {
+		return this.distanceM;
+	}
+
 	public void add(Record record) {
-		if(this.next != null) {
-			throw new RuntimeException();
+		if (this.next != null) {
+			throw new RuntimeException("this.next != null");
 		} else {
 			this.next = record;
 			record.prev = this;
 		}
 	}
 
-	public boolean hasNext() {
-		return this.next != null;
+	public double getSpeedKmH() {
+		long durationMs = Duration.between(this.prev.timestamp, this.timestamp).toMillis();
+		double speed = (distanceM / durationMs) * 3600;
+		return speed;
 	}
 
-	public Record next() {
-		return this.next;
+	public long getDrivingSeconds() {
+		long durationS = Duration.between(this.prev.timestamp, this.timestamp).toSeconds();
+		return durationS;
 	}
 
 	public TimeZoneType getTimeZoneType() {
@@ -48,17 +55,8 @@ public class Record {
 		}
 	}
 
-	public double getDistanceM() {
-		return this.distanceM;
+	public Record next() {
+		return this.next;
 	}
 
-	public double getSpeedKmH() {
-		long durationMs = Duration.between(this.prev.timestamp, this.timestamp).toMillis();
-		double speed = (distanceM / durationMs) * 3600;
-		return speed;
-	}
-
-	public LocalTime getTimestamp() {
-		return this.timestamp;
-	}
 }
