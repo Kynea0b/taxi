@@ -16,7 +16,7 @@ LINEヤフー株式会社（当時LINE株式会社）様が2021年の新卒採�
 成果物
 + 概念モデル
 + クラス図
-+ コード（タグ名：ver3.X）
++ コード（タグ名：ver3.0）
 
 ・概念モデル
 <img width="1026" alt="スクリーンショット 2024-04-03 19 44 08" src="https://github.com/reo-fujimoto2653/taxi/assets/82273732/b91a521d-7a7e-4908-bb69-ef0960ef5ac7">
