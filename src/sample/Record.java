@@ -28,7 +28,9 @@ public class Record {
 	}
 
 	public double getSpeedKmH() {
+		// 前回レコードと今回レコードの秒速を求める
 		long durationMs = Duration.between(this.prev.timestamp, this.timestamp).toMillis();
+		// 時速に変換
 		double speed = (distanceM / durationMs) * 3600;
 		return speed;
 	}
